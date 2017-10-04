@@ -1,0 +1,41 @@
+body {
+    background-color: dimgray;
+    color:white;
+    
+    margin-left: 20%;
+    margin-right: 20%;
+}
+h1 {
+    padding-top: 10px;
+    text-align: center;
+    color: white;
+}
+header {
+    border-bottom: thick solid black;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+p{
+    color: white;
+}
+img {
+    width: 100%;
+}
+a {
+    text-decoration : none;
+    color : #000;
+}
+form {
+    margin-top: 3%;
+    font: 16px 'Arial', sans-serif;
+    border-radius: 10px;
+}
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
