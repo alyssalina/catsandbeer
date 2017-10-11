@@ -90,10 +90,11 @@ PlayState.preload = function () {
     this.game.load.image('font:numbers', 'images/numbers.png');
 
     this.game.load.image('background', 'images/floor.png');
-    this.game.load.image('ground', 'images/ground.png');
     this.game.load.image('wall:8x1', 'images/wall_8x1.png');
     this.game.load.image('wall:6x1', 'images/wall_6x1.png');
+    this.game.load.image('wall:4x1r', 'images/wall_4x1_rotated.png');
     this.game.load.image('wall:4x1', 'images/wall_4x1.png');
+    this.game.load.image('wall:2x1r', 'images/wall_2x1_rotated.png');
     this.game.load.image('wall:2x1', 'images/wall_2x1.png');
     this.game.load.image('wall:1x1', 'images/wall_1x1.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
@@ -103,7 +104,7 @@ PlayState.preload = function () {
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
     this.game.load.spritesheet('hero', 'images/hero.png', 72, 72);
-    this.game.load.spritesheet('door', 'images/door.png', 42, 66);
+    this.game.load.spritesheet('door', 'images/door.png', 47, 74);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
 
     this.game.load.audio('sfx:coin', 'audio/coin.wav');
@@ -112,7 +113,7 @@ PlayState.preload = function () {
     this.game.load.audio('sfx:door', 'audio/door.wav');
 };
 
-var background
+// var background
 PlayState.create = function () {
     // create sound entities
     this.sfx = {
@@ -124,7 +125,7 @@ PlayState.create = function () {
 
     // create level
     // this.game.add.image(0, 0, 'background');
-    background = this.game.add.tileSprite(0, 0, 1080, 720, "background");
+    var background = this.game.add.tileSprite(0, 0, 1080, 720, "background");
     this._loadLevel(this.game.cache.getJSON(`level:${this.level}`));
 
     // crete hud with scoreboards)
@@ -132,7 +133,7 @@ PlayState.create = function () {
 };
 
 PlayState.update = function () {
-    background.tilePosition.x = 0.5;
+    // background.tilePosition.x = 0.5;
     this._handleCollisions();
     this._handleInput();
 
@@ -152,9 +153,9 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.overlap(this.hero, this.key, this._onHeroVsKey,
         null, this);
     this.game.physics.arcade.overlap(this.hero, this.door, this._onHeroVsDoor,
-        // ignore if there is no key or the player is on air
+        // ignore if there is no key
         function (hero, door) {
-            return this.hasKey && hero.body.touching.down;
+            return this.hasKey;
         }, this);
 };
 
@@ -199,10 +200,6 @@ PlayState._loadLevel = function (data) {
     data.coins.forEach(this._spawnCoin, this);
     this._spawnDoor(data.door.x, data.door.y);
     this._spawnKey(data.key.x, data.key.y);
-
-    // enable gravity
-    // const GRAVITY = 1200;
-    // this.game.physics.arcade.gravity.y = GRAVITY;
 };
 
 PlayState._spawnPlatform = function (platform) {
@@ -210,7 +207,6 @@ PlayState._spawnPlatform = function (platform) {
         platform.x, platform.y, platform.image);
 
     this.game.physics.enable(sprite);
-    // sprite.body.allowGravity = false;
     sprite.body.immovable = true;
 
     this._spawnEnemyWall(platform.x, platform.y, 'left');
@@ -224,7 +220,6 @@ PlayState._spawnEnemyWall = function (x, y, side) {
     // physic properties
     this.game.physics.enable(sprite);
     sprite.body.immovable = true;
-    // sprite.body.allowGravity = false;
 };
 
 PlayState._spawnCharacters = function (data) {
@@ -244,7 +239,6 @@ PlayState._spawnCoin = function (coin) {
     sprite.anchor.set(0.5, 0.5);
 
     this.game.physics.enable(sprite);
-    // sprite.body.allowGravity = false;
 
     sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
     sprite.animations.play('rotate');
@@ -254,7 +248,7 @@ PlayState._spawnDoor = function (x, y) {
     this.door = this.bgDecoration.create(x, y, 'door');
     this.door.anchor.setTo(0.5, 1);
     this.game.physics.enable(this.door);
-    // this.door.body.allowGravity = false;
+    this.door.body.allowGravity = false;
 };
 
 PlayState._spawnKey = function (x, y) {
@@ -262,7 +256,6 @@ PlayState._spawnKey = function (x, y) {
     this.key.anchor.set(0.5, 0.5);
     // enable physics to detect collisions, so the hero can pick the key up
     this.game.physics.enable(this.key);
-    // this.key.body.allowGravity = false;
     // add a small 'up & down' animation via a tween
     this.key.y -= 3;
     this.game.add.tween(this.key)
