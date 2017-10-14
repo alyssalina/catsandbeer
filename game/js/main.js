@@ -102,6 +102,7 @@ PlayState.preload = function () {
     this.game.load.image('key', 'images/key.png');
 
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
+    this.game.load.spritesheet('lava', 'images/lava_animated.png', 72, 72);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
     this.game.load.spritesheet('hero', 'images/hero.png', 72, 72);
     this.game.load.spritesheet('door', 'images/door.png', 47, 74);
@@ -145,7 +146,8 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.spiders, this.platforms);
     this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
     this.game.physics.arcade.collide(this.hero, this.platforms);
-
+    this.game.physics.arcade.overlap(this.hero, this.lava,
+        this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.coins, this._onHeroVsCoin,
         null, this);
     this.game.physics.arcade.overlap(this.hero, this.spiders,
@@ -189,6 +191,7 @@ PlayState._loadLevel = function (data) {
     this.platforms = this.game.add.group();
     this.coins = this.game.add.group();
     this.spiders = this.game.add.group();
+    this.lava = this.game.add.group();
     this.enemyWalls = this.game.add.group();
     this.enemyWalls.visible = false;
 
@@ -196,6 +199,7 @@ PlayState._loadLevel = function (data) {
     data.platforms.forEach(this._spawnPlatform, this);
     // spawn hero and enemies
     this._spawnCharacters({hero: data.hero, spiders: data.spiders});
+    data.lava.forEach(this._spawnLava, this);
     // spawn important objects
     data.coins.forEach(this._spawnCoin, this);
     this._spawnDoor(data.door.x, data.door.y);
@@ -232,6 +236,16 @@ PlayState._spawnCharacters = function (data) {
     // spawn hero
     this.hero = new Hero(this.game, data.hero.x, data.hero.y);
     this.game.add.existing(this.hero);
+};
+
+PlayState._spawnLava = function (lava) {
+    let sprite = this.lava.create(lava.x, lava.y, 'lava');
+    sprite.anchor.set(0.5, 0.5);
+
+    this.game.physics.enable(sprite);
+
+    sprite.animations.add('rotate', [0,1,2,3,4], 2, true);
+    sprite.animations.play('rotate');
 };
 
 PlayState._spawnCoin = function (coin) {
@@ -273,15 +287,8 @@ PlayState._onHeroVsCoin = function (hero, coin) {
 };
 
 PlayState._onHeroVsEnemy = function (hero, enemy) {
-    if (hero.body.velocity.y > 0) { // kill enemies when hero is falling
-        hero.bounce();
-        enemy.die();
-        this.sfx.stomp.play();
-    }
-    else { // game over -> restart the game
-        this.sfx.stomp.play();
-        this.game.state.restart(true, false, {level: this.level});
-    }
+    this.sfx.stomp.play();
+    this.game.state.restart(true, false, {level: this.level});
 };
 
 PlayState._onHeroVsKey = function (hero, key) {
