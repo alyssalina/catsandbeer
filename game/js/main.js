@@ -159,11 +159,11 @@ PlayState.update = function () {
     this._handleCollisions();
     this._handleInput();
 
-    this.hopFont.text = `x${this.hopPickupCount}`
-    this.waterFont.text = `x${this.waterPickupCount}`
-    this.yeastFont.text = `x${this.yeastPickupCount}`
-    this.grainFont.text = `x${this.grainPickupCount}`
-    this.coinFont.text = `x${this.coinPickupCount}`
+    this.hopFont.text = `x${this.hopPickupCount}`;
+    this.waterFont.text = `x${this.waterPickupCount}`;
+    this.yeastFont.text = `x${this.yeastPickupCount}`;
+    this.grainFont.text = `x${this.grainPickupCount}`;
+    this.coinFont.text = `x${this.coinPickupCount}`;
     this.keyIcon.frame = this.hasKey ? 1 : 0;
 };
 
@@ -418,9 +418,7 @@ PlayState._createHud = function () {
     this.yeastFont = this.game.add.retroFont('font:numbers', 20, 26,
         NUMBERS_STR);
     this.grainFont = this.game.add.retroFont('font:numbers', 20, 26,
-        NUMBERS_STR);
-    
-
+        NUMBERS_STR);   
 
     this.keyIcon = this.game.make.image(0, 19, 'icon:key');
     this.keyIcon.anchor.set(0, 0.5);
@@ -435,17 +433,17 @@ PlayState._createHud = function () {
         hopIcon.height / 2, this.hopFont);
     hopScoreImg.anchor.set(0, 0.5);
 
-    let grainIcon = this.game.make.image(this.keyIcon.width + 150, 0, 'icon:grain');
+    let grainIcon = this.game.make.image(this.keyIcon.width + 200, 0, 'icon:grain');
     let grainScoreImg = this.game.make.image(grainIcon.x + grainIcon.width,
         grainIcon.height / 2, this.grainFont);
     grainScoreImg.anchor.set(0, 0.5);
 
-    let yeastIcon = this.game.make.image(this.keyIcon.width + 200, 0, 'icon:yeast');
+    let yeastIcon = this.game.make.image(this.keyIcon.width + 300, 0, 'icon:yeast');
     let yeastScoreImg = this.game.make.image(yeastIcon.x + yeastIcon.width,
         yeastIcon.height / 2, this.yeastFont);
     yeastScoreImg.anchor.set(0, 0.5);
 
-    let waterIcon = this.game.make.image(this.keyIcon.width + 250, 0, 'icon:water');
+    let waterIcon = this.game.make.image(this.keyIcon.width + 400, 0, 'icon:water');
     let waterScoreImg = this.game.make.image(waterIcon.x + waterIcon.width,
         waterIcon.height / 2, this.waterFont);
     waterScoreImg.anchor.set(0, 0.5);
@@ -454,7 +452,7 @@ PlayState._createHud = function () {
     this.hud.add(coinIcon);
     this.hud.add(coinScoreImg);
     this.hud.add(hopIcon);
-    this.gud.add(waterIcon);
+    this.hud.add(waterIcon);
     this.hud.add(yeastIcon);
     this.hud.add(grainIcon);
     this.hud.add(hopScoreImg);
