@@ -79,6 +79,10 @@ PlayState.init = function (data) {
     cursors = this.game.input.keyboard.createCursorKeys();
 
     this.coinPickupCount = 0;
+    this.hopPickupCount = 0;
+    this.waterPickupCount = 0;
+    this.grainPickupCount = 0;
+    this.yeastPickupCount = 0;
     this.hasKey = false;
     this.level = (data.level || 0) % LEVEL_COUNT;
 };
@@ -99,9 +103,17 @@ PlayState.preload = function () {
     this.game.load.image('wall:1x1', 'images/wall_1x1.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('icon:coin', 'images/coin_icon.png');
+    this.game.load.image('icon:hop', 'images/hop_icon.png');
+    this.game.load.image('icon:water', 'images/water_icon.png');
+    this.game.load.image('icon:grain', 'images/grain_icon.png');
+    this.game.load.image('icon:yeast', 'images/yeast_icon.png');
     this.game.load.image('key', 'images/key.png');
 
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
+    this.game.load.spritesheet('hop', 'images/hop_animated.png',22, 22);
+    this.game.load.spritesheet('water', 'images/water_animated.png',22, 22);
+    this.game.load.spritesheet('grain', 'images/grain_animated.png',22, 22);
+    this.game.load.spritesheet('yeast', 'images/yeast_animated.png',22, 22);
     this.game.load.spritesheet('lava', 'images/lava_animated.png', 72, 72);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
     this.game.load.spritesheet('hero', 'images/hero.png', 72, 72);
@@ -109,6 +121,7 @@ PlayState.preload = function () {
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
 
     this.game.load.audio('sfx:coin', 'audio/coin.wav');
+    this.game.load.audio('sfx:hop', 'audio/coin.wav');
     this.game.load.audio('sfx:stomp', 'audio/stomp.wav');
     this.game.load.audio('sfx:key', 'audio/key.wav');
     this.game.load.audio('sfx:door', 'audio/door.wav');
@@ -119,6 +132,7 @@ PlayState.create = function () {
     // create sound entities
     this.sfx = {
         coin: this.game.add.audio('sfx:coin'),
+        hop: this.game.add.audio('sfx:hop'),
         stomp: this.game.add.audio('sfx:stomp'),
         key: this.game.add.audio('sfx:key'),
         door: this.game.add.audio('sfx:door')
@@ -133,12 +147,14 @@ PlayState.create = function () {
     this._createHud();
 };
 
+//updates playstate
 PlayState.update = function () {
     // background.tilePosition.x = 0.5;
     this._handleCollisions();
     this._handleInput();
 
-    this.coinFont.text = `x${this.coinPickupCount}`;
+    this.hopFont.text = `x${this.hopPickupCount}`
+    this.coinFont.text = `x${this.coinPickupCount}`
     this.keyIcon.frame = this.hasKey ? 1 : 0;
 };
 
@@ -149,6 +165,8 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.overlap(this.hero, this.lava,
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.coins, this._onHeroVsCoin,
+        null, this);
+    this.game.physics.arcade.overlap(this.hero, this.hops, this._onHeroVsHop, 
         null, this);
     this.game.physics.arcade.overlap(this.hero, this.spiders,
         this._onHeroVsEnemy, null, this);
@@ -190,6 +208,7 @@ PlayState._loadLevel = function (data) {
     this.bgDecoration = this.game.add.group();
     this.platforms = this.game.add.group();
     this.coins = this.game.add.group();
+    this.hops = this.game.add.group();
     this.spiders = this.game.add.group();
     this.lava = this.game.add.group();
     this.enemyWalls = this.game.add.group();
@@ -202,6 +221,7 @@ PlayState._loadLevel = function (data) {
     data.lava.forEach(this._spawnLava, this);
     // spawn important objects
     data.coins.forEach(this._spawnCoin, this);
+    data.hops.forEach(this._spawnHop, this);
     this._spawnDoor(data.door.x, data.door.y);
     this._spawnKey(data.key.x, data.key.y);
 };
@@ -258,6 +278,16 @@ PlayState._spawnCoin = function (coin) {
     sprite.animations.play('rotate');
 };
 
+PlayState._spawnHop = function (hop) {
+    let sprite = this.hops.create(hop.x, hop.y, 'hop');
+    sprite.anchor.set(0.5, 0.5);
+
+    this.game.physics.enable(sprite);
+
+    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
+    sprite.animations.play('rotate');
+};
+
 PlayState._spawnDoor = function (x, y) {
     this.door = this.bgDecoration.create(x, y, 'door');
     this.door.anchor.setTo(0.5, 1);
@@ -286,6 +316,12 @@ PlayState._onHeroVsCoin = function (hero, coin) {
     this.coinPickupCount++;
 };
 
+PlayState._onHeroVsHop = function (hero, hop) {
+    this.sfx.hop.play();
+    hop.kill();
+    this.hopPickupCount++;
+};
+
 PlayState._onHeroVsEnemy = function (hero, enemy) {
     this.sfx.stomp.play();
     this.game.state.restart(true, false, {level: this.level});
@@ -306,6 +342,9 @@ PlayState._createHud = function () {
     const NUMBERS_STR = '0123456789X ';
     this.coinFont = this.game.add.retroFont('font:numbers', 20, 26,
         NUMBERS_STR);
+    this.hopFont = this.game.add.retroFont('font:numbers', 20, 26,
+        NUMBERS_STR);
+
 
     this.keyIcon = this.game.make.image(0, 19, 'icon:key');
     this.keyIcon.anchor.set(0, 0.5);
@@ -315,9 +354,16 @@ PlayState._createHud = function () {
         coinIcon.height / 2, this.coinFont);
     coinScoreImg.anchor.set(0, 0.5);
 
+    let hopIcon = this.game.make.image(this.keyIcon.width + 100, 0, 'icon:hop');
+    let hopScoreImg = this.game.make.image(hopIcon.x + hopIcon.width,
+        hopIcon.height / 2, this.hopFont);
+    hopScoreImg.anchor.set(0, 0.5);
+
     this.hud = this.game.add.group();
     this.hud.add(coinIcon);
     this.hud.add(coinScoreImg);
+    this.hud.add(hopIcon);
+    this.hud.add(hopScoreImg);
     this.hud.add(this.keyIcon);
     this.hud.position.set(10, 10);
 };
