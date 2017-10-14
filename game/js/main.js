@@ -423,34 +423,38 @@ PlayState._createHud = function () {
     this.keyIcon = this.game.make.image(0, 19, 'icon:key');
     this.keyIcon.anchor.set(0, 0.5);
 
+/*   Comment out coin scoreboard
     let coinIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:coin');
     let coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width,
         coinIcon.height / 2, this.coinFont);
-    coinScoreImg.anchor.set(0, 0.5);
+    coinScoreImg.anchor.set(0, 0.5); 
+    */
 
-    let hopIcon = this.game.make.image(this.keyIcon.width + 100, 0, 'icon:hop');
+    let hopIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:hop');
     let hopScoreImg = this.game.make.image(hopIcon.x + hopIcon.width,
         hopIcon.height / 2, this.hopFont);
     hopScoreImg.anchor.set(0, 0.5);
 
-    let grainIcon = this.game.make.image(this.keyIcon.width + 200, 0, 'icon:grain');
+    let grainIcon = this.game.make.image(this.keyIcon.width + 100, 0, 'icon:grain');
     let grainScoreImg = this.game.make.image(grainIcon.x + grainIcon.width,
         grainIcon.height / 2, this.grainFont);
     grainScoreImg.anchor.set(0, 0.5);
 
-    let yeastIcon = this.game.make.image(this.keyIcon.width + 300, 0, 'icon:yeast');
+    let yeastIcon = this.game.make.image(this.keyIcon.width + 200, 0, 'icon:yeast');
     let yeastScoreImg = this.game.make.image(yeastIcon.x + yeastIcon.width,
         yeastIcon.height / 2, this.yeastFont);
     yeastScoreImg.anchor.set(0, 0.5);
 
-    let waterIcon = this.game.make.image(this.keyIcon.width + 400, 0, 'icon:water');
+    let waterIcon = this.game.make.image(this.keyIcon.width + 300, 0, 'icon:water');
     let waterScoreImg = this.game.make.image(waterIcon.x + waterIcon.width,
         waterIcon.height / 2, this.waterFont);
     waterScoreImg.anchor.set(0, 0.5);
 
     this.hud = this.game.add.group();
+/*  Comment out coins in scoreboard
     this.hud.add(coinIcon);
-    this.hud.add(coinScoreImg);
+    this.hud.add(coinScoreImg); 
+    */
     this.hud.add(hopIcon);
     this.hud.add(waterIcon);
     this.hud.add(yeastIcon);
