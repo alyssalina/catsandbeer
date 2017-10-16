@@ -175,14 +175,14 @@ PlayState._handleCollisions = function () {
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.coins, this._onHeroVsCoin,
         null, this);
-    this.game.physics.arcade.overlap(this.hero, this.hops, this._onHeroVsHop, 
+    this.game.physics.arcade.overlap(this.hero, this.hops, this._onHeroVsHop,
         null, this);
-    this.game.physics.arcade.overlap(this.hero, this.waters, this._onHeroVsWater, 
+    this.game.physics.arcade.overlap(this.hero, this.waters, this._onHeroVsWater,
         null, this);
-    this.game.physics.arcade.overlap(this.hero, this.grains, this._onHeroVsGrain, 
+    this.game.physics.arcade.overlap(this.hero, this.grains, this._onHeroVsGrain,
         null, this);
-    this.game.physics.arcade.overlap(this.hero, this.yeasts, this._onHeroVsYeast, 
-        null, this);        
+    this.game.physics.arcade.overlap(this.hero, this.yeasts, this._onHeroVsYeast,
+        null, this);
     this.game.physics.arcade.overlap(this.hero, this.spiders,
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.key, this._onHeroVsKey,
@@ -198,11 +198,11 @@ PlayState._handleInput = function () {
     this.hero.body.velocity.set(0);
 
     if (cursors.left.isDown) { // move hero left
-        this.hero.body.velocity.x = -100;
+        tweenLeft = this.add.tween(this.hero).to({ x: this.hero.x - 36 }, 50, Phaser.Easing.Linear.None, true);
         this.hero.play('left');
     }
     else if (cursors.right.isDown) { // move hero right
-        this.hero.body.velocity.x = 100;
+        tweenRight = this.add.tween(this.hero).to({ x: this.hero.x + 36 }, 50, Phaser.Easing.Linear.None, true);
         this.hero.play('right');
     }
     else if (cursors.up.isDown) {
@@ -418,7 +418,7 @@ PlayState._createHud = function () {
     this.yeastFont = this.game.add.retroFont('font:numbers', 20, 26,
         NUMBERS_STR);
     this.grainFont = this.game.add.retroFont('font:numbers', 20, 26,
-        NUMBERS_STR);   
+        NUMBERS_STR);
 
     this.keyIcon = this.game.make.image(0, 19, 'icon:key');
     this.keyIcon.anchor.set(0, 0.5);
@@ -427,7 +427,7 @@ PlayState._createHud = function () {
     let coinIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:coin');
     let coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width,
         coinIcon.height / 2, this.coinFont);
-    coinScoreImg.anchor.set(0, 0.5); 
+    coinScoreImg.anchor.set(0, 0.5);
     */
 
     let hopIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:hop');
@@ -453,7 +453,7 @@ PlayState._createHud = function () {
     this.hud = this.game.add.group();
 /*  Comment out coins in scoreboard
     this.hud.add(coinIcon);
-    this.hud.add(coinScoreImg); 
+    this.hud.add(coinScoreImg);
     */
     this.hud.add(hopIcon);
     this.hud.add(waterIcon);
