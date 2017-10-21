@@ -103,17 +103,17 @@ PlayState.preload = function () {
     this.game.load.image('wall:1x1', 'images/wall_1x1.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('icon:coin', 'images/coin_icon.png');
-    this.game.load.image('icon:hop', 'images/hop_icon.png');
-    this.game.load.image('icon:water', 'images/water_icon.png');
-    this.game.load.image('icon:grain', 'images/grain_icon.png');
-    this.game.load.image('icon:yeast', 'images/yeast_icon.png');
+    this.game.load.image('icon:hop', 'images/hop.png');
+    this.game.load.image('icon:water', 'images/water.png');
+    this.game.load.image('icon:grain', 'images/grain.png');
+    this.game.load.image('icon:yeast', 'images/yeast.png');
     this.game.load.image('key', 'images/key.png');
 
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
-    this.game.load.spritesheet('hop', 'images/hop_animated.png',22, 22);
-    this.game.load.spritesheet('water', 'images/water_animated.png',22, 22);
-    this.game.load.spritesheet('grain', 'images/grain_animated.png',22, 22);
-    this.game.load.spritesheet('yeast', 'images/yeast_animated.png',22, 22);
+    this.game.load.spritesheet('hop', 'images/hop.png',32, 32);
+    this.game.load.spritesheet('water', 'images/water.png',32, 32);
+    this.game.load.spritesheet('grain', 'images/grain.png',32, 32);
+    this.game.load.spritesheet('yeast', 'images/yeast.png',32, 32);
     this.game.load.spritesheet('lava', 'images/lava_animated.png', 72, 72);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
     this.game.load.spritesheet('hero', 'images/hero.png', 72, 72);
@@ -198,11 +198,11 @@ PlayState._handleInput = function () {
     this.hero.body.velocity.set(0);
 
     if (cursors.left.isDown) { // move hero left
-        tweenLeft = this.add.tween(this.hero).to({ x: this.hero.x - 36 }, 50, Phaser.Easing.Linear.None, true);
+        this.hero.body.velocity.x = -100;
         this.hero.play('left');
     }
     else if (cursors.right.isDown) { // move hero right
-        tweenRight = this.add.tween(this.hero).to({ x: this.hero.x + 36 }, 50, Phaser.Easing.Linear.None, true);
+        this.hero.body.velocity.x = 100;
         this.hero.play('right');
     }
     else if (cursors.up.isDown) {
@@ -305,8 +305,12 @@ PlayState._spawnHop = function (hop) {
 
     this.game.physics.enable(sprite);
 
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
-    sprite.animations.play('rotate');
+    this.hops.y -= 3;
+    this.game.add.tween(this.hops)
+        .to({y: this.hops.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
+        .yoyo(true)
+        .loop()
+        .start();
 };
 
 PlayState._spawnWater = function (water) {
@@ -315,8 +319,12 @@ PlayState._spawnWater = function (water) {
 
     this.game.physics.enable(sprite);
 
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
-    sprite.animations.play('rotate');
+    this.waters.y -= 3;
+    this.game.add.tween(this.waters)
+        .to({y: this.waters.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
+        .yoyo(true)
+        .loop()
+        .start();
 };
 
 PlayState._spawnYeast = function (yeast) {
@@ -325,8 +333,12 @@ PlayState._spawnYeast = function (yeast) {
 
     this.game.physics.enable(sprite);
 
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
-    sprite.animations.play('rotate');
+    this.yeasts.y -= 3;
+    this.game.add.tween(this.yeasts)
+        .to({y: this.yeasts.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
+        .yoyo(true)
+        .loop()
+        .start();
 };
 
 PlayState._spawnGrain = function (grain) {
@@ -335,8 +347,12 @@ PlayState._spawnGrain = function (grain) {
 
     this.game.physics.enable(sprite);
 
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
-    sprite.animations.play('rotate');
+    this.grains.y -= 3;
+    this.game.add.tween(this.grains)
+        .to({y: this.grains.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
+        .yoyo(true)
+        .loop()
+        .start();
 };
 
 PlayState._spawnDoor = function (x, y) {
