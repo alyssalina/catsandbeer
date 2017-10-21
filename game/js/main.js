@@ -101,7 +101,6 @@ PlayState.preload = function () {
     this.game.load.image('wall:2x1r', 'images/wall_2x1_rotated.png');
     this.game.load.image('wall:2x1', 'images/wall_2x1.png');
     this.game.load.image('wall:1x1', 'images/wall_1x1.png');
-    this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('icon:coin', 'images/coin_icon.png');
     this.game.load.image('icon:hop', 'images/hop.png');
     this.game.load.image('icon:water', 'images/water.png');
@@ -169,7 +168,6 @@ PlayState.update = function () {
 
 PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.spiders, this.platforms);
-    this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
     this.game.physics.arcade.collide(this.hero, this.platforms);
     this.game.physics.arcade.overlap(this.hero, this.lava,
         this._onHeroVsEnemy, null, this);
@@ -229,8 +227,7 @@ PlayState._loadLevel = function (data) {
     this.waters = this.game.add.group();
     this.spiders = this.game.add.group();
     this.lava = this.game.add.group();
-    this.enemyWalls = this.game.add.group();
-    this.enemyWalls.visible = false;
+
 
     // spawn all platforms
     data.platforms.forEach(this._spawnPlatform, this);
@@ -254,17 +251,6 @@ PlayState._spawnPlatform = function (platform) {
     this.game.physics.enable(sprite);
     sprite.body.immovable = true;
 
-    this._spawnEnemyWall(platform.x, platform.y, 'left');
-    this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
-};
-
-PlayState._spawnEnemyWall = function (x, y, side) {
-    let sprite = this.enemyWalls.create(x, y, 'invisible-wall');
-    // anchor and y displacement
-    sprite.anchor.set(side === 'left' ? 1 : 0, 1);
-    // physic properties
-    this.game.physics.enable(sprite);
-    sprite.body.immovable = true;
 };
 
 PlayState._spawnCharacters = function (data) {
