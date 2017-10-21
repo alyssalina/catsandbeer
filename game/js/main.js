@@ -103,17 +103,17 @@ PlayState.preload = function () {
     this.game.load.image('wall:1x1', 'images/wall_1x1.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('icon:coin', 'images/coin_icon.png');
-    this.game.load.image('icon:hop', 'images/hop_icon.png');
-    this.game.load.image('icon:water', 'images/water_icon.png');
-    this.game.load.image('icon:grain', 'images/grain_icon.png');
-    this.game.load.image('icon:yeast', 'images/yeast_icon.png');
+    this.game.load.image('icon:hop', 'images/hop.png');
+    this.game.load.image('icon:water', 'images/water.png');
+    this.game.load.image('icon:grain', 'images/grain.png');
+    this.game.load.image('icon:yeast', 'images/yeast.png');
     this.game.load.image('key', 'images/key.png');
 
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
-    this.game.load.spritesheet('hop', 'images/hop_animated.png',22, 22);
-    this.game.load.spritesheet('water', 'images/water_animated.png',22, 22);
-    this.game.load.spritesheet('grain', 'images/grain_animated.png',22, 22);
-    this.game.load.spritesheet('yeast', 'images/yeast_animated.png',22, 22);
+    this.game.load.spritesheet('hop', 'images/hop.png',32, 32);
+    this.game.load.spritesheet('water', 'images/water.png',32, 32);
+    this.game.load.spritesheet('grain', 'images/grain.png',32, 32);
+    this.game.load.spritesheet('yeast', 'images/yeast.png',32, 32);
     this.game.load.spritesheet('lava', 'images/lava_animated.png', 72, 72);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
     this.game.load.spritesheet('hero', 'images/hero.png', 72, 72);
@@ -175,14 +175,14 @@ PlayState._handleCollisions = function () {
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.coins, this._onHeroVsCoin,
         null, this);
-    this.game.physics.arcade.overlap(this.hero, this.hops, this._onHeroVsHop, 
+    this.game.physics.arcade.overlap(this.hero, this.hops, this._onHeroVsHop,
         null, this);
-    this.game.physics.arcade.overlap(this.hero, this.waters, this._onHeroVsWater, 
+    this.game.physics.arcade.overlap(this.hero, this.waters, this._onHeroVsWater,
         null, this);
-    this.game.physics.arcade.overlap(this.hero, this.grains, this._onHeroVsGrain, 
+    this.game.physics.arcade.overlap(this.hero, this.grains, this._onHeroVsGrain,
         null, this);
-    this.game.physics.arcade.overlap(this.hero, this.yeasts, this._onHeroVsYeast, 
-        null, this);        
+    this.game.physics.arcade.overlap(this.hero, this.yeasts, this._onHeroVsYeast,
+        null, this);
     this.game.physics.arcade.overlap(this.hero, this.spiders,
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.key, this._onHeroVsKey,
@@ -305,8 +305,12 @@ PlayState._spawnHop = function (hop) {
 
     this.game.physics.enable(sprite);
 
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
-    sprite.animations.play('rotate');
+    this.hops.y -= 3;
+    this.game.add.tween(this.hops)
+        .to({y: this.hops.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
+        .yoyo(true)
+        .loop()
+        .start();
 };
 
 PlayState._spawnWater = function (water) {
@@ -315,8 +319,12 @@ PlayState._spawnWater = function (water) {
 
     this.game.physics.enable(sprite);
 
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
-    sprite.animations.play('rotate');
+    this.waters.y -= 3;
+    this.game.add.tween(this.waters)
+        .to({y: this.waters.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
+        .yoyo(true)
+        .loop()
+        .start();
 };
 
 PlayState._spawnYeast = function (yeast) {
@@ -325,8 +333,12 @@ PlayState._spawnYeast = function (yeast) {
 
     this.game.physics.enable(sprite);
 
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
-    sprite.animations.play('rotate');
+    this.yeasts.y -= 3;
+    this.game.add.tween(this.yeasts)
+        .to({y: this.yeasts.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
+        .yoyo(true)
+        .loop()
+        .start();
 };
 
 PlayState._spawnGrain = function (grain) {
@@ -335,8 +347,12 @@ PlayState._spawnGrain = function (grain) {
 
     this.game.physics.enable(sprite);
 
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
-    sprite.animations.play('rotate');
+    this.grains.y -= 3;
+    this.game.add.tween(this.grains)
+        .to({y: this.grains.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
+        .yoyo(true)
+        .loop()
+        .start();
 };
 
 PlayState._spawnDoor = function (x, y) {
@@ -418,7 +434,7 @@ PlayState._createHud = function () {
     this.yeastFont = this.game.add.retroFont('font:numbers', 20, 26,
         NUMBERS_STR);
     this.grainFont = this.game.add.retroFont('font:numbers', 20, 26,
-        NUMBERS_STR);   
+        NUMBERS_STR);
 
     this.keyIcon = this.game.make.image(0, 19, 'icon:key');
     this.keyIcon.anchor.set(0, 0.5);
@@ -427,7 +443,7 @@ PlayState._createHud = function () {
     let coinIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:coin');
     let coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width,
         coinIcon.height / 2, this.coinFont);
-    coinScoreImg.anchor.set(0, 0.5); 
+    coinScoreImg.anchor.set(0, 0.5);
     */
 
     let hopIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:hop');
@@ -453,7 +469,7 @@ PlayState._createHud = function () {
     this.hud = this.game.add.group();
 /*  Comment out coins in scoreboard
     this.hud.add(coinIcon);
-    this.hud.add(coinScoreImg); 
+    this.hud.add(coinScoreImg);
     */
     this.hud.add(hopIcon);
     this.hud.add(waterIcon);
