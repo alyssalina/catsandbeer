@@ -78,7 +78,6 @@ PlayState.init = function (data) {
 
     cursors = this.game.input.keyboard.createCursorKeys();
 
-    this.coinPickupCount = 0;
     this.hopPickupCount = 0;
     this.waterPickupCount = 0;
     this.grainPickupCount = 0;
@@ -101,14 +100,12 @@ PlayState.preload = function () {
     this.game.load.image('wall:2x1r', 'images/wall_2x1_rotated.png');
     this.game.load.image('wall:2x1', 'images/wall_2x1.png');
     this.game.load.image('wall:1x1', 'images/wall_1x1.png');
-    this.game.load.image('icon:coin', 'images/coin_icon.png');
     this.game.load.image('icon:hop', 'images/hop.png');
     this.game.load.image('icon:water', 'images/water.png');
     this.game.load.image('icon:grain', 'images/grain.png');
     this.game.load.image('icon:yeast', 'images/yeast.png');
     this.game.load.image('key', 'images/key.png');
 
-    this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
     this.game.load.spritesheet('hop', 'images/hop.png',32, 32);
     this.game.load.spritesheet('water', 'images/water.png',32, 32);
     this.game.load.spritesheet('grain', 'images/grain.png',32, 32);
@@ -119,7 +116,6 @@ PlayState.preload = function () {
     this.game.load.spritesheet('door', 'images/door.png', 47, 74);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
 
-    this.game.load.audio('sfx:coin', 'audio/coin.wav');
     this.game.load.audio('sfx:hop', 'audio/coin.wav');
     this.game.load.audio('sfx:water', 'audio/coin.wav');
     this.game.load.audio('sfx:grain', 'audio/coin.wav');
@@ -133,7 +129,6 @@ PlayState.preload = function () {
 PlayState.create = function () {
     // create sound entities
     this.sfx = {
-        coin: this.game.add.audio('sfx:coin'),
         hop: this.game.add.audio('sfx:hop'),
         grain: this.game.add.audio('sfx:grain'),
         water: this.game.add.audio('sfx:water'),
@@ -162,7 +157,6 @@ PlayState.update = function () {
     this.waterFont.text = `x${this.waterPickupCount}`;
     this.yeastFont.text = `x${this.yeastPickupCount}`;
     this.grainFont.text = `x${this.grainPickupCount}`;
-    this.coinFont.text = `x${this.coinPickupCount}`;
     this.keyIcon.frame = this.hasKey ? 1 : 0;
 };
 
@@ -171,8 +165,6 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.hero, this.platforms);
     this.game.physics.arcade.overlap(this.hero, this.lava,
         this._onHeroVsEnemy, null, this);
-    this.game.physics.arcade.overlap(this.hero, this.coins, this._onHeroVsCoin,
-        null, this);
     this.game.physics.arcade.overlap(this.hero, this.hops, this._onHeroVsHop,
         null, this);
     this.game.physics.arcade.overlap(this.hero, this.waters, this._onHeroVsWater,
@@ -220,7 +212,6 @@ PlayState._loadLevel = function (data) {
     // create all the groups/layers that we need
     this.bgDecoration = this.game.add.group();
     this.platforms = this.game.add.group();
-    this.coins = this.game.add.group();
     this.hops = this.game.add.group();
     this.grains = this.game.add.group();
     this.yeasts = this.game.add.group();
@@ -228,14 +219,12 @@ PlayState._loadLevel = function (data) {
     this.spiders = this.game.add.group();
     this.lava = this.game.add.group();
 
-
     // spawn all platforms
     data.platforms.forEach(this._spawnPlatform, this);
     // spawn hero and enemies
     this._spawnCharacters({hero: data.hero, spiders: data.spiders});
     data.lava.forEach(this._spawnLava, this);
     // spawn important objects
-    data.coins.forEach(this._spawnCoin, this);
     data.hops.forEach(this._spawnHop, this);
     data.waters.forEach(this._spawnWater, this);
     data.yeasts.forEach(this._spawnYeast, this);
@@ -272,16 +261,6 @@ PlayState._spawnLava = function (lava) {
     this.game.physics.enable(sprite);
 
     sprite.animations.add('rotate', [0,1,2,3,4], 2, true);
-    sprite.animations.play('rotate');
-};
-
-PlayState._spawnCoin = function (coin) {
-    let sprite = this.coins.create(coin.x, coin.y, 'coin');
-    sprite.anchor.set(0.5, 0.5);
-
-    this.game.physics.enable(sprite);
-
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
     sprite.animations.play('rotate');
 };
 
@@ -362,13 +341,6 @@ PlayState._spawnKey = function (x, y) {
         .start();
 };
 
-
-PlayState._onHeroVsCoin = function (hero, coin) {
-    this.sfx.coin.play();
-    coin.kill();
-    this.coinPickupCount++;
-};
-
 PlayState._onHeroVsHop = function (hero, hop) {
     this.sfx.hop.play();
     hop.kill();
@@ -411,8 +383,6 @@ PlayState._onHeroVsDoor = function (hero, door) {
 
 PlayState._createHud = function () {
     const NUMBERS_STR = '0123456789X ';
-    this.coinFont = this.game.add.retroFont('font:numbers', 20, 26,
-        NUMBERS_STR);
     this.hopFont = this.game.add.retroFont('font:numbers', 20, 26,
         NUMBERS_STR);
     this.waterFont = this.game.add.retroFont('font:numbers', 20, 26,
@@ -424,13 +394,6 @@ PlayState._createHud = function () {
 
     this.keyIcon = this.game.make.image(0, 19, 'icon:key');
     this.keyIcon.anchor.set(0, 0.5);
-
-/*   Comment out coin scoreboard
-    let coinIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:coin');
-    let coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width,
-        coinIcon.height / 2, this.coinFont);
-    coinScoreImg.anchor.set(0, 0.5);
-    */
 
     let hopIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:hop');
     let hopScoreImg = this.game.make.image(hopIcon.x + hopIcon.width,
@@ -453,10 +416,6 @@ PlayState._createHud = function () {
     waterScoreImg.anchor.set(0, 0.5);
 
     this.hud = this.game.add.group();
-/*  Comment out coins in scoreboard
-    this.hud.add(coinIcon);
-    this.hud.add(coinScoreImg);
-    */
     this.hud.add(hopIcon);
     this.hud.add(waterIcon);
     this.hud.add(yeastIcon);
