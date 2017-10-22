@@ -160,9 +160,9 @@ PlayState.update = function () {
     this.yeastFont.text = `x${this.yeastPickupCount}`;
     this.grainFont.text = `x${this.grainPickupCount}`;
     this.keyIcon.frame = this.hasKey ? 1 : 0;
-    if (this.grainPickupCount > 0) {
+    if (this.grainPickupCount == 0 && this.waterPickupCount == 0 && this.yeastPickupCount == 0 && this.hopPickupCount == 0) 
         this.hasKey = true;
-    }
+
 };
 
 PlayState._handleCollisions = function () {
