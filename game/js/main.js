@@ -72,6 +72,7 @@ Spider.prototype.die = function () {
 // =============================================================================
 
 PlayState = {};
+
 let initHopCount = 0;
 let initWaterCount = 0;
 let initGrainCount = 0;
@@ -80,9 +81,13 @@ const LEVEL_COUNT = 2;
 
 PlayState.init = function (data) {
     this.game.renderer.renderSession.roundPixels = true;
-
+    
     cursors = this.game.input.keyboard.createCursorKeys();
 
+    initHopCount = 0;
+    initWaterCount = 0;
+    initGrainCount = 0;
+    initYeastCount = 0;
     this.hasKey = false;
     this.level = (data.level || 0) % LEVEL_COUNT;
 };
