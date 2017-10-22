@@ -1,10 +1,12 @@
 function Hero(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'hero');
     this.anchor.set(0.5, 0.5);
-    //sprite.body.setSize(45, 72, 0, 0);
     // physic properties
     this.game.physics.enable(this);
     this.body.collideWorldBounds = true;
+
+    //adjusted bounding box size for hero (width, height, x-offset, y-offset)
+    this.body.setSize(42,60,15, 5);
 
     left = this.animations.add('left', [1]);
     right = this.animations.add('right', [2]);
