@@ -70,7 +70,10 @@ Spider.prototype.die = function () {
 // =============================================================================
 
 PlayState = {};
-
+let initHopCount = 0;
+let initWaterCount = 0;
+let initGrainCount = 0;
+let initYeastCount = 0;
 const LEVEL_COUNT = 2;
 
 PlayState.init = function (data) {
@@ -78,10 +81,6 @@ PlayState.init = function (data) {
 
     cursors = this.game.input.keyboard.createCursorKeys();
 
-    this.hopPickupCount = 0;
-    this.waterPickupCount = 0;
-    this.grainPickupCount = 0;
-    this.yeastPickupCount = 0;
     this.hasKey = false;
     this.level = (data.level || 0) % LEVEL_COUNT;
 };
@@ -123,6 +122,7 @@ PlayState.preload = function () {
     this.game.load.audio('sfx:stomp', 'audio/stomp.wav');
     this.game.load.audio('sfx:key', 'audio/key.wav');
     this.game.load.audio('sfx:door', 'audio/door.wav');
+
 };
 
 // var background
@@ -231,6 +231,12 @@ PlayState._loadLevel = function (data) {
     data.grains.forEach(this._spawnGrain, this);
     this._spawnDoor(data.door.x, data.door.y);
     this._spawnKey(data.key.x, data.key.y);
+
+    
+    this.hopPickupCount = initHopCount;
+    this.waterPickupCount = initWaterCount;
+    this.grainPickupCount = initGrainCount;
+    this.yeastPickupCount = initYeastCount;
 };
 
 PlayState._spawnPlatform = function (platform) {
@@ -266,8 +272,10 @@ PlayState._spawnLava = function (lava) {
 
 PlayState._spawnHop = function (hop) {
     let sprite = this.hops.create(hop.x, hop.y, 'hop');
-    sprite.anchor.set(0.5, 0.5);
-
+    sprite.anchor.set(0.5, 0.5)
+    
+    initHopCount++;
+    console.log(initHopCount)
     this.game.physics.enable(sprite);
 
     this.hops.y -= 3;
@@ -282,6 +290,7 @@ PlayState._spawnWater = function (water) {
     let sprite = this.waters.create(water.x, water.y, 'water');
     sprite.anchor.set(0.5, 0.5);
 
+    initWaterCount++;
     this.game.physics.enable(sprite);
 
     this.waters.y -= 3;
@@ -296,6 +305,7 @@ PlayState._spawnYeast = function (yeast) {
     let sprite = this.yeasts.create(yeast.x, yeast.y, 'yeast');
     sprite.anchor.set(0.5, 0.5);
 
+    initYeastCount++;
     this.game.physics.enable(sprite);
 
     this.yeasts.y -= 3;
@@ -310,6 +320,7 @@ PlayState._spawnGrain = function (grain) {
     let sprite = this.grains.create(grain.x, grain.y, 'grain');
     sprite.anchor.set(0.5, 0.5);
 
+    initGrainCount++;
     this.game.physics.enable(sprite);
 
     this.grains.y -= 3;
@@ -344,25 +355,25 @@ PlayState._spawnKey = function (x, y) {
 PlayState._onHeroVsHop = function (hero, hop) {
     this.sfx.hop.play();
     hop.kill();
-    this.hopPickupCount++;
+    this.hopPickupCount--;
 };
 
 PlayState._onHeroVsWater = function (hero, water) {
     this.sfx.water.play();
     water.kill();
-    this.waterPickupCount++;
+    this.waterPickupCount--;
 };
 
 PlayState._onHeroVsYeast = function (hero, yeast) {
     this.sfx.yeast.play();
     yeast.kill();
-    this.yeastPickupCount++;
+    this.yeastPickupCount--;
 };
 
 PlayState._onHeroVsGrain = function (hero, grain) {
     this.sfx.grain.play();
     grain.kill();
-    this.grainPickupCount++;
+    this.grainPickupCount--;
 };
 
 PlayState._onHeroVsEnemy = function (hero, enemy) {
