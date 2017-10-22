@@ -158,6 +158,9 @@ PlayState.update = function () {
     this.yeastFont.text = `x${this.yeastPickupCount}`;
     this.grainFont.text = `x${this.grainPickupCount}`;
     this.keyIcon.frame = this.hasKey ? 1 : 0;
+    if (this.grainPickupCount > 0) {
+        this.hasKey = true;
+    }
 };
 
 PlayState._handleCollisions = function () {
@@ -377,8 +380,8 @@ PlayState._onHeroVsKey = function (hero, key) {
 };
 
 PlayState._onHeroVsDoor = function (hero, door) {
-    this.sfx.door.play();
-    this.game.state.restart(true, false, { level: this.level + 1 });
+        this.sfx.door.play();
+        this.game.state.restart(true, false, { level: this.level + 1 });  
 };
 
 PlayState._createHud = function () {
