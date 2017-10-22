@@ -1,7 +1,7 @@
 function Hero(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'hero');
     this.anchor.set(0.5, 0.5);
-
+    //sprite.body.setSize(45, 72, 0, 0);
     // physic properties
     this.game.physics.enable(this);
     this.body.collideWorldBounds = true;
@@ -186,21 +186,21 @@ PlayState._handleCollisions = function () {
 
 PlayState._handleInput = function () {
     this.hero.body.velocity.set(0);
-
+    velocity = 200
     if (cursors.left.isDown) { // move hero left
-        this.hero.body.velocity.x = -100;
+        this.hero.body.velocity.x = -velocity;
         this.hero.play('left');
     }
     else if (cursors.right.isDown) { // move hero right
-        this.hero.body.velocity.x = 100;
+        this.hero.body.velocity.x = velocity;
         this.hero.play('right');
     }
     else if (cursors.up.isDown) {
-        this.hero.body.velocity.y = -100;
+        this.hero.body.velocity.y = -velocity;
         this.hero.play('up');
     }
     else if (cursors.down.isDown) {
-        this.hero.body.velocity.y = 100;
+        this.hero.body.velocity.y = velocity;
         this.hero.play('down');
     }
     else { // stop
