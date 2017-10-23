@@ -413,7 +413,7 @@ PlayState._createHud = function () {
     this.grainFont = this.game.add.retroFont('font:numbers', 20, 26,
         NUMBERS_STR);
 
-    this.keyIcon = this.game.make.image(0, 19, 'icon:key');
+    this.keyIcon = this.game.make.image(5, 16, 'icon:key');
     this.keyIcon.anchor.set(0, 0.5);
 
     let hopIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:hop');
