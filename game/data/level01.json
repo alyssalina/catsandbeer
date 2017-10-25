@@ -4,7 +4,7 @@
         {"image": "wall:4x1", "x": 792, "y": 360},
         {"image": "wall:1x1", "x": 576, "y": 648},
         {"image": "wall:8x1", "x": 216, "y": 288},
-        {"image": "wall:6x1", "x": 144, "y": 580},
+        {"image": "wall:6x1", "x": 143, "y": 576},
         {"image": "wall:4x1", "x": 0, "y": 72},
         {"image": "wall:8x1", "x": 0, "y": 0},
         {"image": "wall:4x1", "x": 792, "y": 144}
