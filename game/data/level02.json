@@ -1,0 +1,16 @@
+{
+    "platforms": [
+        {"image": "blank", "x": 0, "y": 650},
+        {"image": "blank", "x": 0, "y": 500}
+    ],
+
+    "hops": [],
+    "grains": [],
+    "yeasts": [],
+    "waters": [],
+    "lava": [],
+    "hero": {"x": 72, "y": 612},
+    "spiders": [],
+    "door": {"x": 600, "y": 648},
+    "key": {}
+}

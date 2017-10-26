@@ -77,7 +77,7 @@ let initHopCount = 0;
 let initWaterCount = 0;
 let initGrainCount = 0;
 let initYeastCount = 0;
-const LEVEL_COUNT = 2;
+const LEVEL_COUNT = 3;
 
 PlayState.init = function (data) {
     this.game.renderer.renderSession.roundPixels = true;
@@ -95,10 +95,13 @@ PlayState.init = function (data) {
 PlayState.preload = function () {
     this.game.load.json('level:0', 'data/level00.json');
     this.game.load.json('level:1', 'data/level01.json');
+    this.game.load.json('level:2', 'data/level02.json');
+    
 
     this.game.load.image('font:numbers', 'images/numbers.png');
 
     this.game.load.image('background', 'images/floor.png');
+    this.game.load.image('outside', 'images/outside.png');
     this.game.load.image('wall:8x1', 'images/wall_8x1.png');
     this.game.load.image('wall:6x1', 'images/wall_6x1.png');
     this.game.load.image('wall:4x1r', 'images/wall_4x1_rotated.png');
@@ -111,6 +114,7 @@ PlayState.preload = function () {
     this.game.load.image('icon:grain', 'images/grain.png');
     this.game.load.image('icon:yeast', 'images/yeast.png');
     this.game.load.image('key', 'images/key.png');
+    this.game.load.image('blank', 'images/blank_10x1.png');
 
     this.game.load.spritesheet('hop', 'images/hop.png',32, 32);
     this.game.load.spritesheet('water', 'images/water.png',32, 32);
@@ -147,8 +151,17 @@ PlayState.create = function () {
 
     // create level
     // this.game.add.image(0, 0, 'background');
-    var background = this.game.add.tileSprite(0, 0, 1080, 720, "background");
-    this._loadLevel(this.game.cache.getJSON(`level:${this.level}`));
+    if (this.level < LEVEL_COUNT-1){
+        var background = this.game.add.tileSprite(0, 0, 1080, 720, "background"); 
+        this._loadLevel(this.game.cache.getJSON(`level:${this.level}`));
+    }
+    else{
+        background = this.game.add.sprite(0, 0, 'outside');
+        this._loadLevel(this.game.cache.getJSON(`level:${this.level}`));
+        this.game.add.text(350,330, "You're a super player!!", { font: "72px Arial", fill: "#f26c4f", align: "left" });
+        this.game.add.text(650,580, "(Play Again?)", { font: "32px Arial", fill: "#FFFFFF", align: "center" }); 
+    };
+ 
 
     // crete hud with scoreboards)
     this._createHud();
