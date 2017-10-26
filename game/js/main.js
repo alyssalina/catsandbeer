@@ -81,7 +81,7 @@ const LEVEL_COUNT = 3;
 
 PlayState.init = function (data) {
     this.game.renderer.renderSession.roundPixels = true;
-    
+
     cursors = this.game.input.keyboard.createCursorKeys();
 
     initHopCount = 0;
@@ -121,7 +121,7 @@ PlayState.preload = function () {
     this.game.load.spritesheet('grain', 'images/grain.png',32, 32);
     this.game.load.spritesheet('yeast', 'images/yeast.png',32, 32);
     this.game.load.spritesheet('lava', 'images/lava_animated.png', 72, 72);
-    this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
+    this.game.load.spritesheet('spider', 'images/spider.png', 70, 70);
     this.game.load.spritesheet('hero', 'images/hero.png', 72, 72);
     this.game.load.spritesheet('door', 'images/door.png', 47, 74);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
@@ -178,7 +178,7 @@ PlayState.update = function () {
     this.yeastFont.text = `x${this.yeastPickupCount}`;
     this.grainFont.text = `x${this.grainPickupCount}`;
     this.keyIcon.frame = this.hasKey ? 1 : 0;
-    if (this.grainPickupCount == 0 && this.waterPickupCount == 0 && this.yeastPickupCount == 0 && this.hopPickupCount == 0) 
+    if (this.grainPickupCount == 0 && this.waterPickupCount == 0 && this.yeastPickupCount == 0 && this.hopPickupCount == 0)
         this.hasKey = true;
 
 };
@@ -255,7 +255,7 @@ PlayState._loadLevel = function (data) {
     this._spawnDoor(data.door.x, data.door.y);
     this._spawnKey(data.key.x, data.key.y);
 
-    
+
     this.hopPickupCount = initHopCount;
     this.waterPickupCount = initWaterCount;
     this.grainPickupCount = initGrainCount;
@@ -296,9 +296,8 @@ PlayState._spawnLava = function (lava) {
 PlayState._spawnHop = function (hop) {
     let sprite = this.hops.create(hop.x, hop.y, 'hop');
     sprite.anchor.set(0.5, 0.5)
-    
+
     initHopCount++;
-    console.log(initHopCount)
     this.game.physics.enable(sprite);
 
     this.hops.y -= 3;
@@ -412,7 +411,7 @@ PlayState._onHeroVsKey = function (hero, key) {
 
 PlayState._onHeroVsDoor = function (hero, door) {
         this.sfx.door.play();
-        this.game.state.restart(true, false, { level: this.level + 1 });  
+        this.game.state.restart(true, false, { level: this.level + 1 });
 };
 
 PlayState._createHud = function () {
