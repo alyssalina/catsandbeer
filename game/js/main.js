@@ -72,6 +72,7 @@ Spider.prototype.die = function () {
 // =============================================================================
 
 PlayState = {};
+
 let initHopCount = 0;
 let initWaterCount = 0;
 let initGrainCount = 0;
@@ -83,6 +84,10 @@ PlayState.init = function (data) {
 
     cursors = this.game.input.keyboard.createCursorKeys();
 
+    initHopCount = 0;
+    initWaterCount = 0;
+    initGrainCount = 0;
+    initYeastCount = 0;
     this.hasKey = false;
     this.level = (data.level || 0) % LEVEL_COUNT;
 };
@@ -160,6 +165,9 @@ PlayState.update = function () {
     this.yeastFont.text = `x${this.yeastPickupCount}`;
     this.grainFont.text = `x${this.grainPickupCount}`;
     this.keyIcon.frame = this.hasKey ? 1 : 0;
+    if (this.grainPickupCount == 0 && this.waterPickupCount == 0 && this.yeastPickupCount == 0 && this.hopPickupCount == 0)
+        this.hasKey = true;
+
 };
 
 PlayState._handleCollisions = function () {
@@ -234,7 +242,7 @@ PlayState._loadLevel = function (data) {
     this._spawnDoor(data.door.x, data.door.y);
     this._spawnKey(data.key.x, data.key.y);
 
-    
+
     this.hopPickupCount = initHopCount;
     this.waterPickupCount = initWaterCount;
     this.grainPickupCount = initGrainCount;
@@ -275,9 +283,8 @@ PlayState._spawnLava = function (lava) {
 PlayState._spawnHop = function (hop) {
     let sprite = this.hops.create(hop.x, hop.y, 'hop');
     sprite.anchor.set(0.5, 0.5)
-    
+
     initHopCount++;
-    console.log(initHopCount)
     this.game.physics.enable(sprite);
 
     this.hops.y -= 3;
@@ -390,8 +397,8 @@ PlayState._onHeroVsKey = function (hero, key) {
 };
 
 PlayState._onHeroVsDoor = function (hero, door) {
-    this.sfx.door.play();
-    this.game.state.restart(true, false, { level: this.level + 1 });
+        this.sfx.door.play();
+        this.game.state.restart(true, false, { level: this.level + 1 });
 };
 
 PlayState._createHud = function () {
@@ -405,7 +412,7 @@ PlayState._createHud = function () {
     this.grainFont = this.game.add.retroFont('font:numbers', 20, 26,
         NUMBERS_STR);
 
-    this.keyIcon = this.game.make.image(0, 19, 'icon:key');
+    this.keyIcon = this.game.make.image(5, 16, 'icon:key');
     this.keyIcon.anchor.set(0, 0.5);
 
     let hopIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:hop');
