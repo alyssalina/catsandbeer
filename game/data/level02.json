@@ -10,7 +10,7 @@
     "waters": [],
     "lava": [],
     "hero": {"x": 72, "y": 612},
-    "spiders": [],
+    "cucumbers": [],
     "door": {"x": 600, "y": 648},
-    "key": {}
+    "pitcher": {}
 }
