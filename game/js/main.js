@@ -24,10 +24,10 @@ Hero.prototype.bounce = function () {
 };
 
 //
-// Spider (enemy)
+// cucumber (enemy)
 //
-function Spider(game, x, y) {
-    Phaser.Sprite.call(this, game, x, y, 'spider');
+function Cucumber(game, x, y) {
+    Phaser.Sprite.call(this, game, x, y, 'cucumber');
 
     // anchor
     this.anchor.set(0.5);
@@ -39,26 +39,26 @@ function Spider(game, x, y) {
     // physic properties
     this.game.physics.enable(this);
     this.body.collideWorldBounds = true;
-    this.body.velocity.x = Spider.SPEED;
+    this.body.velocity.x = Cucumber.SPEED;
 }
 
-Spider.SPEED = 100;
+Cucumber.SPEED = 100;
 
 // inherit from Phaser.Sprite
-Spider.prototype = Object.create(Phaser.Sprite.prototype);
-Spider.prototype.constructor = Spider;
+Cucumber.prototype = Object.create(Phaser.Sprite.prototype);
+Cucumber.prototype.constructor = Cucumber;
 
-Spider.prototype.update = function () {
+Cucumber.prototype.update = function () {
     // check against walls and reverse direction if necessary
     if (this.body.touching.right || this.body.blocked.right) {
-        this.body.velocity.x = -Spider.SPEED; // turn left
+        this.body.velocity.x = -Cucumber.SPEED; // turn left
     }
     else if (this.body.touching.left || this.body.blocked.left) {
-        this.body.velocity.x = Spider.SPEED; // turn right
+        this.body.velocity.x = Cucumber.SPEED; // turn right
     }
 };
 
-Spider.prototype.die = function () {
+Cucumber.prototype.die = function () {
     this.body.enable = false;
 
     this.animations.play('die').onComplete.addOnce(function () {
@@ -96,7 +96,7 @@ PlayState.preload = function () {
     this.game.load.json('level:0', 'data/level00.json');
     this.game.load.json('level:1', 'data/level01.json');
     this.game.load.json('level:2', 'data/level02.json');
-    
+
 
     this.game.load.image('font:numbers', 'images/numbers.png');
 
@@ -121,7 +121,7 @@ PlayState.preload = function () {
     this.game.load.spritesheet('grain', 'images/grain.png',32, 32);
     this.game.load.spritesheet('yeast', 'images/yeast.png',32, 32);
     this.game.load.spritesheet('lava', 'images/lava_animated.png', 72, 72);
-    this.game.load.spritesheet('spider', 'images/spider.png', 70, 70);
+    this.game.load.spritesheet('cucumber', 'images/cucumber.png', 70, 70);
     this.game.load.spritesheet('hero', 'images/hero.png', 72, 72);
     this.game.load.spritesheet('door', 'images/door.png', 47, 74);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
@@ -152,16 +152,16 @@ PlayState.create = function () {
     // create level
     // this.game.add.image(0, 0, 'background');
     if (this.level < LEVEL_COUNT-1){
-        var background = this.game.add.tileSprite(0, 0, 1080, 720, "background"); 
+        var background = this.game.add.tileSprite(0, 0, 1080, 720, "background");
         this._loadLevel(this.game.cache.getJSON(`level:${this.level}`));
     }
     else{
         background = this.game.add.sprite(0, 0, 'outside');
         this._loadLevel(this.game.cache.getJSON(`level:${this.level}`));
         this.game.add.text(350,330, "You're a super player!!", { font: "72px Arial", fill: "#f26c4f", align: "left" });
-        this.game.add.text(650,580, "(Play Again?)", { font: "32px Arial", fill: "#FFFFFF", align: "center" }); 
+        this.game.add.text(650,580, "(Play Again?)", { font: "32px Arial", fill: "#FFFFFF", align: "center" });
     };
- 
+
 
     // crete hud with scoreboards)
     this._createHud();
@@ -184,7 +184,7 @@ PlayState.update = function () {
 };
 
 PlayState._handleCollisions = function () {
-    this.game.physics.arcade.collide(this.spiders, this.platforms);
+    this.game.physics.arcade.collide(this.cucumbers, this.platforms);
     this.game.physics.arcade.collide(this.hero, this.platforms);
     this.game.physics.arcade.overlap(this.hero, this.lava,
         this._onHeroVsEnemy, null, this);
@@ -196,7 +196,7 @@ PlayState._handleCollisions = function () {
         null, this);
     this.game.physics.arcade.overlap(this.hero, this.yeasts, this._onHeroVsYeast,
         null, this);
-    this.game.physics.arcade.overlap(this.hero, this.spiders,
+    this.game.physics.arcade.overlap(this.hero, this.cucumbers,
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.key, this._onHeroVsKey,
         null, this);
@@ -239,13 +239,13 @@ PlayState._loadLevel = function (data) {
     this.grains = this.game.add.group();
     this.yeasts = this.game.add.group();
     this.waters = this.game.add.group();
-    this.spiders = this.game.add.group();
+    this.cucumbers = this.game.add.group();
     this.lava = this.game.add.group();
 
     // spawn all platforms
     data.platforms.forEach(this._spawnPlatform, this);
     // spawn hero and enemies
-    this._spawnCharacters({hero: data.hero, spiders: data.spiders});
+    this._spawnCharacters({hero: data.hero, cucumbers: data.cucumbers});
     data.lava.forEach(this._spawnLava, this);
     // spawn important objects
     data.hops.forEach(this._spawnHop, this);
@@ -272,10 +272,10 @@ PlayState._spawnPlatform = function (platform) {
 };
 
 PlayState._spawnCharacters = function (data) {
-    // spawn spiders
-    data.spiders.forEach(function (spider) {
-        let sprite = new Spider(this.game, spider.x, spider.y);
-        this.spiders.add(sprite);
+    // spawn cucumbers
+    data.cucumbers.forEach(function (cucumber) {
+        let sprite = new Cucumber(this.game, cucumber.x, cucumber.y);
+        this.cucumbers.add(sprite);
     }, this);
 
     // spawn hero
