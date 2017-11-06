@@ -113,7 +113,6 @@ PlayState.preload = function () {
     this.game.load.image('icon:water', 'images/water.png');
     this.game.load.image('icon:grain', 'images/grain.png');
     this.game.load.image('icon:yeast', 'images/yeast.png');
-    this.game.load.image('pitcher', 'images/pitcher.png');
     this.game.load.image('blank', 'images/blank_10x1.png');
 
     this.game.load.spritesheet('hop', 'images/hop.png',32, 32);
@@ -131,7 +130,6 @@ PlayState.preload = function () {
     this.game.load.audio('sfx:grain', 'audio/coin.wav');
     this.game.load.audio('sfx:yeast', 'audio/coin.wav');
     this.game.load.audio('sfx:stomp', 'audio/stomp.wav');
-    this.game.load.audio('sfx:pitcher', 'audio/pitcher.wav');
     this.game.load.audio('sfx:door', 'audio/door.wav');
     this.game.load.audio('sfx:wall', 'audio/wall.wav');
 };
@@ -145,13 +143,11 @@ PlayState.create = function () {
         water: this.game.add.audio('sfx:water'),
         yeast: this.game.add.audio('sfx:yeast'),
         stomp: this.game.add.audio('sfx:stomp'),
-        pitcher: this.game.add.audio('sfx:pitcher'),
         door: this.game.add.audio('sfx:door'),
         wall: this.game.add.audio('sfx:wall'),
     };
 
     // create level
-    // this.game.add.image(0, 0, 'background');
     if (this.level < LEVEL_COUNT-1){
         var background = this.game.add.tileSprite(0, 0, 1080, 720, "background");
         this._loadLevel(this.game.cache.getJSON(`level:${this.level}`));
@@ -170,7 +166,6 @@ PlayState.create = function () {
 
 //updates playstate
 PlayState.update = function () {
-    // background.tilePosition.x = 0.5;
     this._handleCollisions();
     this._handleInput();
 
@@ -199,8 +194,6 @@ PlayState._handleCollisions = function () {
         null, this);
     this.game.physics.arcade.overlap(this.hero, this.cucumbers,
         this._onHeroVsEnemy, null, this);
-    this.game.physics.arcade.overlap(this.hero, this.pitcher, this._onHeroVsPitcher,
-        null, this);
     this.game.physics.arcade.overlap(this.hero, this.door, this._onHeroVsDoor,
         // ignore if there is no pitcher
         function (hero, door) {
@@ -254,8 +247,6 @@ PlayState._loadLevel = function (data) {
     data.yeasts.forEach(this._spawnYeast, this);
     data.grains.forEach(this._spawnGrain, this);
     this._spawnDoor(data.door.x, data.door.y);
-    this._spawnPitcher(data.pitcher.x, data.pitcher.y);
-
 
     this.hopPickupCount = initHopCount;
     this.waterPickupCount = initWaterCount;
@@ -269,7 +260,6 @@ PlayState._spawnPlatform = function (platform) {
 
     this.game.physics.enable(sprite);
     sprite.body.immovable = true;
-
 };
 
 PlayState._spawnCharacters = function (data) {
@@ -361,20 +351,6 @@ PlayState._spawnDoor = function (x, y) {
     this.door.body.allowGravity = false;
 };
 
-PlayState._spawnPitcher = function (x, y) {
-    this.pitcher = this.bgDecoration.create(x, y, 'pitcher');
-    this.pitcher.anchor.set(0.5, 0.5);
-    // enable physics to detect collisions, so the hero can pick the pitcher up
-    this.game.physics.enable(this.pitcher);
-    // add a small 'up & down' animation via a tween
-    this.pitcher.y -= 3;
-    this.game.add.tween(this.pitcher)
-        .to({y: this.pitcher.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
-        .yoyo(true)
-        .loop()
-        .start();
-};
-
 PlayState._onHeroVsHop = function (hero, hop) {
     this.sfx.hop.play();
     hop.kill();
@@ -402,12 +378,6 @@ PlayState._onHeroVsGrain = function (hero, grain) {
 PlayState._onHeroVsEnemy = function (hero, enemy) {
     this.sfx.stomp.play();
     this.game.state.restart(true, false, {level: this.level});
-};
-
-PlayState._onHeroVsPitcher = function (hero, pitcher) {
-    this.sfx.pitcher.play();
-    pitcher.kill();
-    this.hasPitcher = true;
 };
 
 PlayState._onHeroVsDoor = function (hero, door) {
