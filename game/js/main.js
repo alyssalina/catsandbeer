@@ -133,7 +133,7 @@ PlayState.preload = function () {
     this.game.load.audio('sfx:stomp', 'audio/stomp.wav');
     this.game.load.audio('sfx:pitcher', 'audio/pitcher.wav');
     this.game.load.audio('sfx:door', 'audio/door.wav');
-
+    this.game.load.audio('sfx:wall', 'audio/wall.wav');
 };
 
 // var background
@@ -146,7 +146,8 @@ PlayState.create = function () {
         yeast: this.game.add.audio('sfx:yeast'),
         stomp: this.game.add.audio('sfx:stomp'),
         pitcher: this.game.add.audio('sfx:pitcher'),
-        door: this.game.add.audio('sfx:door')
+        door: this.game.add.audio('sfx:door'),
+        wall: this.game.add.audio('sfx:wall'),
     };
 
     // create level
@@ -185,7 +186,7 @@ PlayState.update = function () {
 
 PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.cucumbers, this.platforms);
-    this.game.physics.arcade.collide(this.hero, this.platforms);
+    this.game.physics.arcade.collide(this.hero, this.platforms, this._onHeroVsWall, null, this);
     this.game.physics.arcade.overlap(this.hero, this.lava,
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.hops, this._onHeroVsHop,
@@ -412,6 +413,10 @@ PlayState._onHeroVsPitcher = function (hero, pitcher) {
 PlayState._onHeroVsDoor = function (hero, door) {
         this.sfx.door.play();
         this.game.state.restart(true, false, { level: this.level + 1 });
+};
+
+PlayState._onHeroVsWall = function (hero, wall) {
+        this.sfx.wall.play();
 };
 
 PlayState._createHud = function () {
